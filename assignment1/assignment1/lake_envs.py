@@ -21,3 +21,16 @@ register(
     entry_point='gym.envs.toy_text.frozen_lake:FrozenLakeEnv',
     kwargs={'map_name': '4x4',
             'is_slippery': True})
+
+
+register(
+    id='Deterministic-5x5-FrozenLake-v0',
+    entry_point='gym.envs.toy_text.frozen_lake:FrozenLakeEnv',
+    kwargs={'map_name': '5x5',
+            'is_slippery': False})
+
+register(
+    id='Stochastic-5x5-FrozenLake-v0',
+    entry_point='gym.envs.toy_text.frozen_lake:FrozenLakeEnv',
+    kwargs={'map_name': '5x5',
+            'is_slippery': True})

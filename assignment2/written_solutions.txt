@@ -1,0 +1,90 @@
+* assignment2
+** DONE 1
+trajectory giving optimal rewards:
+|     | s | a |   r |
+|-----+---+---+-----|
+| t=0 | 0 | 2 | 0.0 |
+| t=1 | 2 | 1 | 2.0 |
+| t=2 | 1 | 2 | 0.0 |
+| t=3 | 2 | 1 | 2.0 |
+| t=4 | 1 | 0 | 0.1 |
+|-----+---+---+-----|
+|     |   |   | 4.1 |
+
+Since gamma = 1 we simply sum the rewards, since earlier rewards count as much as later rewards.
+
+** 2
+*** DONE 1
+- Using each sample more than once can be more computationally efficient (if the gradient updates are faster than producing the samples)
+- Doing multiple gradient updates for the exact same experience can improve stability
+
+(see solutions, their answer is better)
+ 
+*** DONE 2
+- The target network improves stability by giving more consistent target values, rather than the constantly changing target values we would get from using the network we're updating as the target network.
+
+*** DONE 3
+Computationally more efficiency to compute one vector for all actions rather than a scalar for each action
+
+*** TODO 4
+(coding)
+
+** 3
+*** TODO 1
+Equation 1:
+Q(s, a) = Q(s, a) + \alpha (r + \gamma \max_{a' \in A} Q(s', a') - Q(s,a))
+Equation 2:
+w = w + \alpha (r + \gamma \max_{a' \in A} \hat{q}(s', a', w) - \hat{q}(s, a, w)) \delta_w \hat{q}(s, a, w)
+
+when:
+\hat{q}(s, a, w) = w^T x(s, a)
+w \in R^{|S| |A|}
+
+answer:
+
+Q(s, a) = Q(s, a) + \alpha (r + \gamma \max_{a' \in A} Q(s', a') - Q(s,a))
+
+*** DONE 2
+\hat{q}(s, a, w) = w^T x(s, a)
+frac{\partial}{\partial w} \hat{q}(s, a, w) = frac{\partial}{\partial w} w^T x(s, a)
+frac{\partial}{\partial w} \hat{q}(s, a, w) = x(s, a)
+
+TD_error = r + \gamma \max_{a' \in A} w^T x(s', a') - w^T x(s, a)
+w = w + \alpha * TD_error * x(s, a)/
+
+*** TODO 3
+(coding)
+
+*** TODO 4
+(codingr results)
+
+** 4
+*** TODO 1
+(coding)
+
+*** TODO 2
+
+** 5
+*** DONE 1
+Many Atari games have motion as a very important concept, and it's not possible to derive motion from only one frame.
+
+*** TODO 2
+Total parameters for deep Q-network (need to look at architecture)
+Total parameters for a linear Q-network with input of shape (80, 80, 4) = 80 * 80 * 4 = 25600
+
+*** TODO 3
+*** TODO 4
+*** TODO 5
+
+** 6
+*** TODO 1
+This approach only evaluates the state-values and doesn't take actions into account, so it won't let us make decisions on the best actios to take.
+
+*** TODO 2
+We could use Q-learning's approach of approximating V(s) as \max_{a' \in A} Q(s, a')
+
+This is in contrast to SARSA where we could use V(s) = Q(s', a')
+
+*** TODO 3
+No, we have no guarantees of approximating the optimal state action value function.
+When we combine off

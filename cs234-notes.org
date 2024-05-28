@@ -1,0 +1,55 @@
+* stanford reinforcement learning lecture notes
+** lecture 1 - Introduction to RL
+DOGE: Delayed consequences, optimization, generalization, exploration
+model: how the world works - state transition model and reward model
+AI Planning (Stockfish-style Chess): given model. DOG. no exploration if doing stockfish style
+Supervised learning/unsupervised: OG
+Imitation Learning: DOG. Learn from experience of others. Assumes demos of good policies
+Markov assumption: future is independent of the past given some sufficient summary of the present
+Only partially observable state -> not Markov (unless unobservable state doesn't matter)
+** lecture 2 - RL with known model
+Markov Process (aka Markov Chain): Sequence of random states with Markov property
+Markov Reward Process: Markov Process + Rewards
+*** computing value of a markov reward process
+**** simulation
+roll out state sequences and average. Doesn't use Markov assumption
+**** analytically
+Invert state transition matrix.
+V = R + gamma P V
+V - gamma P V = R 
+(I - gamma P) V = R 
+(I - gamma P) V = (I - gamma P)^-1 R 
+Always possible to invert if gamma < 1, since state transition matrix has only eigenvalues of 0 and 1. 
+**** dynamic programming
+Compute the value function for when only going through k iterations exactly
+continue until value function stops changing very much according to some norm
+*** Markov Decision Process (MDP)
+MDP is MRP with actions
+MDP + policy produces an MRP
+*** control
+** lecture 3 - model-free policy evaluation
+|   | dynamic programming | Monte Carlo | TD-0 |
+|---+---------------------+-------------+------|
+
+** lecture 4
+E-greedy exloration: take the best action with probability E, otherwise take a random action.
+GLIE: Greedy in the Limit of Infinite Exploration
+
+*** TODO maximization bias
+
+** lecture 5 - value function approximation (linear)
+plug in function approximators everywhere for the value function
+
+** lecture 6 - value function approximation with neural networks
+Q-learning with VFA can diverge
+Two of the issues:
+- Correlations between samples
+- Non-stationary targets
+Improvements to Q-learning with Neural Nets for Value-Function Approximation:
+*** experience replay
+save past 10^6 or so (s, a, s, s') tuples and make multiple passes over them
+*** 
+- fixed Q-targets 
+
+Further improvements:
+

@@ -18,6 +18,13 @@ MAPS = {
         "FFFH",
         "HFFG"
     ],
+    "5x5": [
+        "FFHFF",
+        "FSFGF",
+        "FFHFF",
+        "FFFFF",
+        "FFFFF"
+    ],
     "8x8": [
         "SFFFFFFF",
         "FFFFFFFF",

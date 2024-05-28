@@ -57,6 +57,22 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
     ############################
     # YOUR IMPLEMENTATION HERE #
 
+    while True:
+        new_value_function = np.zeros(nS)
+
+        for s in range(0, nS):
+            a = policy[s]
+            for transition in P[s][a]:
+                probability, nextstate, reward, terminal = transition
+                new_value_function[s] += probability * (reward + gamma * value_function[nextstate])
+
+        if np.max(new_value_function - value_function) < tol:
+            value_function = new_value_function
+            break
+
+        value_function = new_value_function
+
+
     ############################
     return value_function
 
@@ -86,6 +102,16 @@ def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
     ############################
     # YOUR IMPLEMENTATION HERE #
 
+    Q = np.zeros((nS, nA), dtype='float32')
+
+    for s in range(0, nS):
+        for a in range(0, nA):
+            for transition in P[s][a]:
+                probability, nextstate, reward, terminal = transition
+                Q[s, a] += probability * (reward + gamma * value_from_policy[nextstate])
+
+    new_policy = np.argmax(Q, axis=1)
+
     ############################
     return new_policy
 
@@ -114,6 +140,17 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
     ############################
     # YOUR IMPLEMENTATION HERE #
 
+    value_function = policy_evaluation(P, nS, nA, policy, gamma, tol)
+    new_policy = policy_improvement(P, nS, nA, value_function, policy, gamma)
+
+    while np.linalg.norm(new_policy - policy, ord=1) > 0:
+        policy = new_policy
+        value_function = policy_evaluation(P, nS, nA, policy, gamma, tol)
+        new_policy = policy_improvement(P, nS, nA, value_function, policy, gamma)
+
+    print(f"policy_iteration value_function: {value_function}")
+    print(f"policy_iteration policy: {policy}")
+
     ############################
     return value_function, policy
 
@@ -140,6 +177,27 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
     policy = np.zeros(nS, dtype=int)
     ############################
     # YOUR IMPLEMENTATION HERE #
+
+    while True:
+        action_values_per_state = np.zeros((nS, nA), dtype='float32')
+
+        for s in range(0, nS):
+            for a in range(0, nA):
+                for transition in P[s][a]:
+                    probability, nextstate, reward, terminal = transition
+                    action_values_per_state[s][a] += probability * (reward + gamma * value_function[nextstate])
+
+        new_value_function = np.max(action_values_per_state, axis=1)
+
+        if np.max(new_value_function - value_function) < tol:
+            value_function = new_value_function
+            break
+
+        value_function = new_value_function
+
+    policy = np.argmax(action_values_per_state, axis=1)
+    print(f"value_iteration value_function: {value_function}")
+    print(f"value_iteration policy: {policy}")
 
     ############################
     return value_function, policy
@@ -182,8 +240,9 @@ def render_single(env, policy, max_steps=100):
 if __name__ == "__main__":
 
         # comment/uncomment these lines to switch between deterministic/stochastic environments
-    env = gym.make("Deterministic-4x4-FrozenLake-v0")
-    # env = gym.make("Stochastic-4x4-FrozenLake-v0")
+    # env = gym.make("Deterministic-4x4-FrozenLake-v0")
+    # env = gym.make("Deterministic-8x8-FrozenLake-v0")
+    env = gym.make("Stochastic-4x4-FrozenLake-v0")
 
     print("\n" + "-" * 25 + "\nBeginning Policy Iteration\n" + "-" * 25)
 

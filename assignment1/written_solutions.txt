@@ -1,0 +1,169 @@
+* assignment1
+f(x) = \sum_{k=0}^{\infty} x^k
+f'(x) = \sum_{k=0}^{\infty} kx^{k-1}
+f''(x) = \sum_{k=0}^{\infty} k(k-1)x^{k-2}
+f'''(x) = \sum_{k=0}^{\infty} k(k-1)(k-2)x^{k-3}
+
+f(0) = 1
+f'(0) = 1
+f''(0) = 2
+f'''(0) = 6
+
+g(x) = (1-x)^{-1}
+g'(x) = (1-x)^{-2}
+g''(x) = 2(1-x)^{-3}
+g'''(x) = 6(1-x)^{-4}
+
+g(0) = 1
+g'(0) = 1
+g''(0) = 2
+g'''(0) = 6
+** 1
+*** DONE 1a
+V(s_i) = \sum_{k=n-i}^{\infty} \gamma^k
+V(s_i) = \gamma^{n-i} / (1-\gamma)
+V(G) = \sum_{k=0}^{\infty} \gamma^k
+V(G) = 1 / (1-\gamma)
+*** DONE 1b
+The policy of taking $a_0$ (right) from any state will be optimal no matter what the value of the discount factor $\gamma$ is.
+The value of $\gamma$ can only change the optimal policy if the policy must make tradeoffs between earlier and later rewards.
+Since every state has only one path towards positive reward, there is no tradeoff to be made.
+Changing $\gamma$ changes the total reward earned on that single path towards positive reward from every state, but does not change what the path toward maximum reward from any state is, since there is always one one positive path.
+*** DONE 1c
+The new optimal value function is:
+V(s_i) = c (\sum_{k=0}^{\infty} \gamma^k) + (\sum_{k=n-i}^{\infty} \gamma^k)
+V(s_i) = (c + \gamma^{n-i}) / (1-\gamma)
+V(G) = (1+c) \sum_{k=0}^{\infty} \gamma^k
+V(G) = (1+c) / (1-\gamma)
+
+Adding a constant reward $c$ to all actions in all states does not change the optimal policy.
+The state-action values for different actions in any particular state will all have the same constant added to them because the change in the immediate reward doesn't depend on the action taken, and the change in all future trajectories doesn't depend on the actions taken in those trajectories.
+Adding a constant to all state-action values doesn't change which state-action value is maximal in any state, so the optimal policy won't change.
+
+*** DONE 1d
+Let $r_{new} = m (c + r_{old})$, using m instead of a to avoid confusion.
+The new optimal value function is:
+V(s_i) = mc (\sum_{k=0}^{\infty} \gamma^k) + m (\sum_{k=n-i}^{\infty} \gamma^k)
+V(G) = m (1+c) \sum_{k=0}^{\infty} \gamma^k
+
+Multiplying all the rewards by a constant $m$ will change the optimal policy if $m$ is negative.
+That would cause $G$ to give the most negative rewards available instead of the most positive, so the optimal policy would be any policy that always avoids state $G$, like always taking $a_1$ to go left.
+Examples value that would change the optimal policy are $m=-1$ and $c=0$
+
+If $m$ is positive, the optimal policy will not change, as multiplying all rewards my a positive scalar never changes which action is optimal in any state.
+** 2
+*** DONE 2a
+taking action a1 in s0
+V(s_0, a_1) = \gamma / (1-\gamma)
+
+*** DONE 2b
+taking action a2 in s0
+V(s_0, a_2) = \gamma^2 / (1-\gamma)
+Since $\gamma < 1$, the optimal actual is $a_1$.
+
+*** DONE 2c
+V_{n}(s_1) = 1/(1-\gamma) - \gamma^n/(1-\gamma)
+V_{n}(s_1) = (1 - \gamma^n)/(1-\gamma)
+
+V_{n}(s_2) = 0
+
+V_{n>1}(s_0, a_1) = 0 + \gamma V_{n}(s_1)
+V_{n>1}(s_0, a_1) = \gamma (1 - \gamma^n)/(1-\gamma)
+
+V_{n>1}(s_0, a_2) = \gamma^2/(1-\gamma) + \gamma V_{n}(s_2)
+V_{n>1}(s_0, a_2) = \gamma^2/(1-\gamma)
+
+V_{n>1}(s_0, a_1) \leq V_{n>1}(s_0, a_2)
+\gamma (1 - \gamma^n)/(1-\gamma) \leq \gamma^2/(1-\gamma)
+1 - \gamma^n \leq \gamma
+\gamma^n \geq 1 - \gamma
+n \log(\gamma) \geq \log(1 - \gamma)
+n \geq \frac{\log(1 - \gamma)}{\log(\gamma)}
+
+** 3
+*** DONE 3a
+V^*(s) - Q^*(s, \pi(s)) \leq 2 \epsilon
+(max_{a \in A} Q^*(s, a)) - Q^*(s, \argmax_{a \in A} \widetilde{Q}(s, a)) \leq 2 \epsilon
+
+Without loss of generality, assume that A contains exactly 2 actions a_{opt} and a_{nonopt}, where
+a_{opt}    = \argmax_{a \in A} Q^*(s, a)
+a_{nonopt} = \argmax_{a \in A} \widetilde{Q}(s, a)
+
+From the constraint on the infinity norm it follows that for all s and a, $|Q^*(s, a) - \widetilde{Q}(s, a)| \leq \epsilon$.
+
+If $Q^*(s, a_{opt}) = C + \epsilon$ and $Q^*(s, a_{nonopt}) = C - \epsilon$ for some constant $C$, it is possible that $\widetilde{Q}(s, a_{opt}) = C$ and $\widetilde{Q}(s, a_{nonopt}) = C$, since the constraint on the deviation between $Q^*(s, a)$ and $\widetilde{Q}(s, a)$ is not violated.
+In this case:
+(max_{a \in A} Q^*(s, a)) - Q^*(s, \argmax_{a \in A} \widetilde{Q}(s, a))
+Q^*(s, a_{opt}) - Q^*(s, a_{nonopt})
+C + \epsilon - (C - \epsilon)
+= 2 \epsilon
+
+Values of less than 2 \epsilon are possible if ||\widetilde{Q} - Q^*|| < \epsilon, but values larger than 2 \epsilon are not possible since that would violate the norm constraint.
+Therefore
+V^*(s) - Q^*(s, \pi(s)) \leq 2 \epsilon
+
+*** DONE 3b
+V_{\pi}(s) \geq V^*(s) - \frac{2\epsilon}{1-\gamma}
+V^*(s)       - V_{\pi}(s) \leq \frac{2\epsilon}{1-\gamma}
+V_{\pi^*}(s) - V_{\pi}(s) \leq \frac{2\epsilon}{1-\gamma}
+
+For all s, taking action \pi(s) instead of \pi^*(s) can lead to losing at most 2\epsilon in expected total discounted sum of rewards *if* we follow \pi^* for the rest of the episode.
+If we always follow \pi at every time step, we can lose at most 2\epsilon in expected total discounted sum of rewards at every timestep.
+This lets us compute the expected total discounted loss when following \pi instead of \pi^* forever:
+\sum_{t=0}^{\infty} -2\epsilon \gamma^t = -2 \epsilon / (1\gamma}
+
+Thus, for any state s, the value function for policy \pi of any state s must be at least the value function \pi^*(s) minus 2 \epsilon / (1\gamma}
+
+*** DONE 3c
+Q^*(s_1, "go") = V^*(s_2) = Q^*(s_2, a) = \sum_{k=0}^{\infty} 2\epsilon \gamma^k = 2\epsilon / (1-\gamma)
+Q^*(s_1, "stay") = \gamma 2\epsilon / (1-\gamma)
+Q^*(s_1, "stay") = 2\epsilon (\frac{1}{1-\gamma} - 1)
+Q^*(s_1, "stay") = -2\epsilon + 2\epsilon \frac{1}{1-\gamma}
+
+*** DONE 3d
+\widetilde{Q}(s_1, "go") = \widetilde{Q}(s_2, a) = -\epsilon + 2\epsilon / (1-\gamma) 
+\widetilde{Q}(s_1, "stay") = -\epsilon + 2\epsilon \frac{1}{1-\gamma}
+
+Since $\widetilde{Q}(s_1, "stay") = \widetilde{Q}(s_1, "go")$, assume we break the tie by taking the action "stay".
+
+\pi(s_1) = \argmax_{a\in A} \widetilde{Q}(s_1, a) = "stay"
+
+V_{\pi}(s_1) = 0
+V^*(s_1) = 2\epsilon / (1-\gamma)
+
+V_{\pi}(s_1) - V^*(s_1) = 0 - 2\epsilon / (1-\gamma)
+V_{\pi}(s_1) - V^*(s_1) = - 2\epsilon / (1-\gamma)
+
+** 4
+*** DONE 4a (vi_and_pi.py)
+*** DONE 4b (vi_and_pi.py)
+*** TODO 4c
+**** Deterministic-4x4-FrozenLake-v0
+policy_iteration value_function: [0.59  0.656 0.729 0.656 0.656 0.    0.81  0.    0.729 0.81  0.9   0. 0.    0.9   1.    0.   ]
+value_iteration value_function:  [0.59  0.656 0.729 0.656 0.656 0.    0.81  0.    0.729 0.81  0.9   0. 0.    0.9   1.    0.   ]
+policy_iteration policy: [1 2 1 0 1 0 1 0 2 1 1 0 0 2 2 0]
+value_iteration policy:  [1 2 1 0 1 0 1 0 2 1 1 0 0 2 2 0]
+**** For Deterministic-8x8-FrozenLake-v0
+policy_iteration value_function: [0.254 0.282 0.314 0.349 0.387 0.43  0.478 0.531 0.282 0.314 0.349 0.387 0.43  0.478 0.531 0.59  0.314 0.349 0.387 0.    0.478 0.531 0.59  0.656 0.349 0.387 0.43  0.478 0.531 0.    0.656 0.729 0.314 0.349 0.387 0. 0.59  0.656 0.729 0.81  0.282 0.    0.    0.59  0.656 0.729 0.    0.9 0.314 0.    0.478 0.531 0.    0.81  0.    1.    0.349 0.387 0.43  0. 0.81  0.9   1.    0.   ]
+value_iteration value_function:  [0.254 0.282 0.314 0.349 0.387 0.43  0.478 0.531 0.282 0.314 0.349 0.387 0.43  0.478 0.531 0.59  0.314 0.349 0.387 0.    0.478 0.531 0.59  0.656 0.349 0.387 0.43  0.478 0.531 0.    0.656 0.729 0.314 0.349 0.387 0. 0.59  0.656 0.729 0.81  0.282 0.    0.    0.59  0.656 0.729 0.    0.9 0.314 0.    0.478 0.531 0.    0.81  0.    1.    0.349 0.387 0.43  0. 0.81  0.9   1.    0.   ]
+policy_iteration policy: [1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 0 1 2 1 1 2 2 2 2 1 0 1 1 2 2 3 0 1 1 2 1 1 0 0 2 2 1 0 1 1 0 2 3 0 1 0 1 2 2 3 0 2 2 2 0]
+value_iteration policy:  [1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 0 1 2 1 1 2 2 2 2 1 0 1 1 2 2 3 0 1 1 2 1 1 0 0 2 2 1 0 1 1 0 2 3 0 1 0 1 2 2 3 0 2 2 2 0]
+**** For Stochastic-4x4-FrozenLake-v0
+policy_iteration value_function: [0.062 0.056 0.07  0.051 0.086 0.    0.11  0.    0.141 0.244 0.297 0. 0.    0.377 0.638 0.   ]
+value_iteration value_function:  [0.063 0.056 0.071 0.052 0.086 0.    0.11  0.    0.141 0.244 0.297 0. 0.    0.378 0.638 0.   ]
+policy_iteration policy: [0 3 0 3 0 0 0 0 3 1 0 0 0 2 1 0]
+value_iteration policy:  [0 3 0 3 0 0 0 0 3 1 0 0 0 2 1 0]
+
+**** analysis
+Policy iteration and value iteration converge to the same thing for a given problem (give the same policies and value functions (up to the tolerance of 0.001)
+
+Deterministic-4x4-FrozenLake-v0: [1 2 1 0 1 0 1 0 2 1 1 0 0 2 2 0]
+Stochastic-4x4-FrozenLake-v0:    [0 3 0 3 0 0 0 0 3 1 0 0 0 2 1 0]
+
+In this case, Stochasticity affect the number of iterations required by
+
+In this case, Stochasticity affects the resulting policy by making it focus more on avoiding holes.
+The stochasticity is set up so that the agent will never move in the *opposite* direction from where it tries to go, but will move randomly in one of the other three directions.
+This is equivalent to choosing which direction *not* to move in, and moving at random in one of the remaining directions.
+The policy learns that it always has "hope" for a positive reward if it just avoids the holes, so it ensures it never falls in a hole and receives 0 reward.
+When it's impossible to fall in a hole, the stochastic policy prioritizes progress along the safest path towards the goal.
